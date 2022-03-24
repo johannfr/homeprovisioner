@@ -11,5 +11,5 @@ Group=homeprovisioner
 WorkingDirectory=/opt/homeprovisioner
 ExecStart=/usr/local/bin/poetry run homeprovisioner
 
-[Install}
+[Install]
 WantedBy=multi-user.target
