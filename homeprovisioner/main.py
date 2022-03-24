@@ -81,6 +81,17 @@ class ShellyZeroconfListener:
 
         reboot_flag = False
 
+        # The settings management is a bit convoluted, because the JSON layout
+        # returned by the Shelly "settings" endpoint is different from the JSON layout
+        # that needs to be POSTed for changing/updating settings (sigh).
+        # Therefore, I first fetch the settings to "device_settings", then I create
+        # a new dictionary called "current_settings" that has the same layout as
+        # the layout used for submission and populate the relevant/supported values
+        # from "device_settings" to it, i.e. at this point I have a dictionary with the
+        # current device settings that matches the layout used for changing/updating
+        # settings.
+        # Finally, I check if "current_settings" is different from "new_settings" and
+        # if so, "new_settings" is POSTed and followed by a reboot.
         device_settings = requests.get(f"http://{ip}/settings").json()
         LOG.debug(device_settings)
         current_settings = {}
@@ -102,11 +113,15 @@ class ShellyZeroconfListener:
             "mqtt_server": f"{self.config['mqtt_host']}:{self.config['mqtt_port']}",
             "mqtt_clean_session": True,
             "mqtt_retain": True,
-            "mqtt_user": "",
             "mqtt_id": self.config["shellies"][usable_name]["id"],
             "mqtt_max_qos": 1,
             "name": self.config["shellies"][usable_name]["id"].replace("/", "_"),
         }
+        try:
+            new_settings["mqtt_user"] = self.config["mqtt_username"]
+        except KeyError:
+            new_settings["mqtt_user"] = ""
+
         if "relays" in device_settings.keys():
             current_settings["relays"] = []
             new_settings["relays"] = []
@@ -135,7 +150,11 @@ class ShellyZeroconfListener:
             LOG.debug(new_settings)
             # The password is a special case because the current password is never
             # sent to us when querying the current settings.
-            new_settings["mqtt_pass"] = ""
+            try:
+                new_settings["mqtt_pass"] = self.config["mqtt_password"]
+            except KeyError:
+                new_settings["mqtt_pass"] = ""
+
             try:
                 update_request = requests.post(
                     f"http://{ip}/settings", data=new_settings
