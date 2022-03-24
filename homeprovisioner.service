@@ -1,0 +1,15 @@
+[Unit]
+Description=HomeProvisioner for home-automation
+After=network.target
+
+[Service]
+Restart=on-failure
+RestartSec=5s
+User=homeprovisioner
+Group=homeprovisioner
+
+WorkingDirectory=/opt/homeprovisioner
+ExecStart=/usr/local/bin/poetry run homeprovisioner
+
+[Install}
+WantedBy=multi-user.target
