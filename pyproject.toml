@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "homeprovisioner"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Jóhann Friðriksson <Johann.Fridriksson@silabs.com>"]
 

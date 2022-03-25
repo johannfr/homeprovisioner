@@ -194,7 +194,8 @@ class ShellyZeroconfListener:
         info = zeroconf.get_service_info(service_type, name)
         try:
             usable_name = info.properties[b"id"].decode("utf-8")
-        except KeyError:
+        except (KeyError, AttributeError):
+            LOG.warning(f"Not able to retrieve usable_name normally: {info}")
             usable_name = info.name.split(".")[0]
         ip = info.parsed_addresses()[0]
         usable_name = usable_name.strip()
