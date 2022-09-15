@@ -142,6 +142,11 @@ class ShellyZeroconfListener:
                 new_settings["relays"].append(new_relay_settings)
 
         if current_settings != new_settings:
+            for k, v in current_settings.items():
+                if v != new_settings[k]:
+                    LOG.info(f"Settings mismatch: {k}")
+                    LOG.info(v)
+                    LOG.info(new_settings[k])
             LOG.info(
                 f"Pushing configuration to {usable_name} "
                 f"{self.config['shellies'][usable_name]['id']} "
@@ -203,9 +208,13 @@ class ShellyZeroconfListener:
                 return
         ip = info.parsed_addresses()[0]
         usable_name = usable_name.strip()
+        try:
+            id_topic = "{self.config['shellies'][usable_name]['id']} "
+        except KeyError:
+            id_topic = ""
         LOG.info(
             f"Zeroconf {action}-service from: {usable_name} "
-            f"{self.config['shellies'][usable_name]['id']} "
+            f"{id_topic} "
             f"(http://{ip})"
         )
         self.known_devices[usable_name] = ip
