@@ -209,7 +209,7 @@ class ShellyZeroconfListener:
         ip = info.parsed_addresses()[0]
         usable_name = usable_name.strip()
         try:
-            id_topic = "{self.config['shellies'][usable_name]['id']} "
+            id_topic = f"{self.config['shellies'][usable_name]['id']} "
         except KeyError:
             id_topic = ""
         LOG.info(
