@@ -145,7 +145,7 @@ class ShellyZeroconfListener:
             for k, v in current_settings.items():
                 if v != new_settings[k]:
                     LOG.info(f"Settings mismatch: {k}")
-                    LOG.info(f"Current (device}: {v}")
+                    LOG.info(f"Current (device): {v}")
                     LOG.info(f"Pending value   : {new_settings[k]}")
             LOG.info(
                 f"Pushing configuration to {usable_name} "
