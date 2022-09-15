@@ -101,7 +101,7 @@ class ShellyZeroconfListener:
             "clean_session"
         ]
         current_settings["mqtt_retain"] = device_settings["mqtt"]["retain"]
-        current_settings["mqtt_user"] = device_settings["mqtt"]["user"]
+        current_settings["mqtt_user"] = device_settings["mqtt"]["user"] or ""
         try:
             current_settings["mqtt_id"] = device_settings["mqtt"]["id"]
         except KeyError:
@@ -145,8 +145,8 @@ class ShellyZeroconfListener:
             for k, v in current_settings.items():
                 if v != new_settings[k]:
                     LOG.info(f"Settings mismatch: {k}")
-                    LOG.info(v)
-                    LOG.info(new_settings[k])
+                    LOG.info(f"Current (device}: {v}")
+                    LOG.info(f"Pending value   : {new_settings[k]}")
             LOG.info(
                 f"Pushing configuration to {usable_name} "
                 f"{self.config['shellies'][usable_name]['id']} "
