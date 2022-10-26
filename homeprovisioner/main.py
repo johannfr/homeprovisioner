@@ -112,7 +112,9 @@ class ShellyZeroconfListener:
             "mqtt_enable": True,
             "mqtt_server": f"{self.config['mqtt_host']}:{self.config['mqtt_port']}",
             "mqtt_clean_session": True,
-            "mqtt_retain": False,
+            "mqtt_retain": self.config["shellies"][usable_name]["retain"]
+            if "retain" in self.config["shellies"][usable_name].keys()
+            else False,
             "mqtt_id": self.config["shellies"][usable_name]["id"],
             "mqtt_max_qos": 1,
             "name": self.config["shellies"][usable_name]["id"].replace("/", "_"),
